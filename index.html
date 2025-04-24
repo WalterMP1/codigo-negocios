@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Código</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Generador de Código para Negocios</h1>
+  <p>Introduce el nombre de tu negocio para recibir un código único:</p>
+  
+  <input type="text" id="nombreNegocio" placeholder="Nombre del negocio" required>
+  <button onclick="generarCodigo()">Generar Código</button>
+
+  <h2>Tu código:</h2>
+  <p id="codigo"></p>
+
+  <script>
+    function generarCodigo() {
+      var nombreNegocio = document.getElementById('nombreNegocio').value;
+
+      if (!nombreNegocio) {
+        alert('Por favor, ingresa un nombre de negocio.');
+        return;
+      }
+
+      // URL del servicio que creamos en Google Apps Script
+      var url = 'TU_URL_DEL_SERVICIO_POST'; // Reemplaza con la URL de tu Apps Script (en la implementación de Web App)
+
+      var data = {
+        nombreNegocio: nombreNegocio
+      };
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          alert(data.error);
+        } else {
+          document.getElementById('codigo').textContent = data.codigo;
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+  </script>
+</body>
+</html>
