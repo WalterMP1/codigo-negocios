@@ -107,15 +107,10 @@
         return;
       }
 
-      try {
-        const response = await fetch('https://corsproxy.io/?https://script.google.com/macros/s/AKfycbxKJdgZY_y2ABzweWbUyvBPmtTv1e22biL9wkTmLnyfIQxd_CKJfQPImBDeSpVqBQ5dfQ/exec', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ nombreNegocio: nombre })
-        });
+      const url = `https://script.google.com/macros/s/AKfycbyqzxn0v8vYW7ZNKlLuhHJ8fEUYvVydksRWblIjbH836iSHrNyg439otKUEkbadx4kSlA/exec?nombreNegocio=${encodeURIComponent(nombre)}`;
 
+      try {
+        const response = await fetch(url);
         const data = await response.json();
 
         if (data.error) {
@@ -125,7 +120,6 @@
           document.getElementById('codigo').textContent = codigoTexto;
           document.getElementById('copiarBtn').style.display = 'inline-block';
         }
-
       } catch (error) {
         console.error('Error al generar el código:', error);
         alert('Hubo un problema al generar el código. Inténtalo más tarde.');
