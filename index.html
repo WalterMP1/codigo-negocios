@@ -3,69 +3,98 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Generador de Código</title>
+  <title>Generar Código de Negocio</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #fdfbfb, #ebedee);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
     }
-    input, button {
-      padding: 10px;
+
+    h1 {
+      color: #333;
+      margin-bottom: 1rem;
+    }
+
+    input {
+      padding: 0.7rem;
+      width: 300px;
       font-size: 16px;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
+
     button {
-      cursor: pointer;
+      padding: 0.8rem 1.2rem;
+      font-size: 16px;
       background-color: #4CAF50;
       color: white;
       border: none;
-      margin-top: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #codigo {
+      margin-top: 2rem;
+      font-size: 24px;
+      color: #333;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
   </style>
 </head>
 <body>
-  <h1>Generador de Código para Negocios</h1>
-  <p>Introduce el nombre de tu negocio para recibir un código único:</p>
-  
-  <input type="text" id="nombreNegocio" placeholder="Nombre del negocio" required>
+  <h1>Genera tu código único</h1>
+  <p>Ingresa el nombre de tu negocio:</p>
+  <input type="text" id="nombreNegocio" placeholder="Ejemplo: Tacos Victor" required>
   <button onclick="generarCodigo()">Generar Código</button>
 
-  <h2>Tu código:</h2>
-  <p id="codigo"></p>
+  <div id="codigo"></div>
 
   <script>
-    function generarCodigo() {
-      var nombreNegocio = document.getElementById('nombreNegocio').value;
-
-      if (!nombreNegocio) {
-        alert('Por favor, ingresa un nombre de negocio.');
+    async function generarCodigo() {
+      const nombre = document.getElementById('nombreNegocio').value.trim();
+      if (!nombre) {
+        alert('Por favor, ingresa el nombre de tu negocio.');
         return;
       }
 
-      // URL del servicio que creamos en Google Apps Script
-      var url = 'https://script.google.com/macros/s/AKfycbxjvyXavJZgdqEcFdguydH0eF09aq1NUfL7nDpwHJd_KvBXzo281PFKzllNtXbwOzKL/exec'; // Reemplaza con la URL de tu Apps Script (en la implementación de Web App)
+      try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbx83YV-rW_l9LgNJ6pqBT-GYWc5Zrpfx8TEOr3Uz6cACxpLtl7_2Ql0yJvl7_2i8v3RBw/exec', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ nombreNegocio: nombre })
+        });
 
-      var data = {
-        nombreNegocio: nombreNegocio
-      };
+        const data = await response.json();
 
-      fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(data => {
         if (data.error) {
-          alert(data.error);
+          alert('Error: ' + data.error);
         } else {
-          document.getElementById('codigo').textContent = data.codigo;
+          document.getElementById('codigo').textContent = 'Tu código único es: ' + data.codigo;
         }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+
+      } catch (error) {
+        console.error('Error al generar el código:', error);
+        alert('Hubo un problema al generar el código. Inténtalo más tarde.');
+      }
     }
   </script>
 </body>
